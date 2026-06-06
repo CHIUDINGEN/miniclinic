@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import tw.edu.fju.miniclinic.model.*;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Controller
@@ -25,6 +26,10 @@ public class DashboardController {
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
         String doctorId = (String) session.getAttribute("loggedInDoctorId");
+        if (doctorId == null) {
+            return "redirect:/login";
+        }
+        
         Doctor doctor = doctorRepo.findById(doctorId).orElse(null);
 
         if (doctor == null) {
@@ -32,7 +37,8 @@ public class DashboardController {
             return "redirect:/login";
         }
 
-        LocalDate today = LocalDate.now();
+        // 確保查詢今日掛號時，時區與病患端掛號時一致
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Taipei"));
         List<Appointment> myAppointments = appointmentRepo.findByDoctorAndApptDate(doctor, today);
         
         model.addAttribute("doctor", doctor);
@@ -62,7 +68,12 @@ public class DashboardController {
         }
 
         String doctorId = (String) session.getAttribute("loggedInDoctorId");
-        Doctor doctor = doctorRepo.findById(doctorId).get();
+        if (doctorId == null) return "redirect:/login";
+
+        Doctor doctor = doctorRepo.findById(doctorId).orElse(null);
+        if (doctor == null || doctor.getPasswordHash() == null) {
+            return "redirect:/login";
+        }
 
         if (!BCrypt.checkpw(form.getOldPassword(), doctor.getPasswordHash())) {
             result.rejectValue("oldPassword", "error.passwordForm", "舊密碼錯誤");

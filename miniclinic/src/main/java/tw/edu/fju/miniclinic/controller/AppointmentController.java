@@ -172,14 +172,15 @@ public class AppointmentController {
     
     // 取得前端傳來的狀態（例如 "CANCELLED"）
     String newStatus = body.get("status");
-    if (!"CANCELLED".equals(newStatus)) {
+    // 修正：允許 COMPLETED 或 CANCELLED 狀態變更
+    if (!"CANCELLED".equals(newStatus) && !"COMPLETED".equals(newStatus)) {
         return ResponseEntity.badRequest().body(Map.of("message", "不合法的狀態變更"));
     }
     
     // 更新狀態並存檔
-    appointment.setStatus("CANCELLED");
+    appointment.setStatus(newStatus);
     appointmentRepo.save(appointment);
     
-    return ResponseEntity.ok(Map.of("message", "掛號已成功取消"));
+    return ResponseEntity.ok(Map.of("message", "狀態更新成功"));
     }
 }

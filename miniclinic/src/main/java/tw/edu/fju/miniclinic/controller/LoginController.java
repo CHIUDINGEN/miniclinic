@@ -43,7 +43,8 @@ public class LoginController {
         Doctor doctor = doctorRepo.findById(form.getDoctorId()).orElse(null);
 
         // 步驟 3：檢查密碼（醫師不存在或密碼錯都給同樣的錯誤訊息，避免洩漏帳號是否存在）
-        if (doctor == null || !BCrypt.checkpw(form.getPassword(), doctor.getPasswordHash())) {
+        // 增加 doctor.getPasswordHash() == null 判斷，防止 BCrypt 報錯導致 500 Error
+        if (doctor == null || doctor.getPasswordHash() == null || !BCrypt.checkpw(form.getPassword(), doctor.getPasswordHash())) {
             model.addAttribute("errorMessage", "醫師編號或密碼錯誤");
             return "login";
         }
