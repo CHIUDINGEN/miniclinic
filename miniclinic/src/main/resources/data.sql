@@ -12,11 +12,11 @@ ON CONFLICT(doctor_id) DO UPDATE SET
     specialty=excluded.specialty, 
     password_hash=excluded.password_hash;
 
--- 初始病患資料（3 位虛構病患）
+-- 初始病患資料（更新為隨機虛擬數據）
 INSERT INTO patient (chart_no, name, gender, birth_date, phone) VALUES
-    ('TEST00001', '王韋澔', '男', '2007-01-06', '0966-852-517'),
-    ('TEST00002', '李彥諄', '男', '2007-03-05', '0979-200-305'),
-    ('TEST00003', '吳宇涵', '女', '2007-03-01', '0988-540-334')
+    ('TEST00001', '張嘉明', '男', '1995-05-20', '0912-345-678'),
+    ('TEST00002', '林秋燕', '女', '1988-11-12', '0921-888-777'),
+    ('TEST00003', '陳俊宏', '男', '2002-01-01', '0933-555-666')
 ON CONFLICT(chart_no) DO UPDATE SET 
     name=excluded.name, 
     gender=excluded.gender, 
