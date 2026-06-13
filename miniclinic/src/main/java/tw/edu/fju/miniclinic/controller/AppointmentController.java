@@ -1,6 +1,5 @@
 package tw.edu.fju.miniclinic.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,14 +31,17 @@ import java.util.Map;
 @Controller
 public class AppointmentController {
 
-    @Autowired
-    private DoctorRepository doctorRepo;
+    private final DoctorRepository doctorRepo;
+    private final PatientRepository patientRepo;
+    private final AppointmentRepository appointmentRepo;
 
-    @Autowired
-    private PatientRepository patientRepo;
-
-    @Autowired
-    private AppointmentRepository appointmentRepo;
+    public AppointmentController(DoctorRepository doctorRepo, 
+                                 PatientRepository patientRepo, 
+                                 AppointmentRepository appointmentRepo) {
+        this.doctorRepo = doctorRepo;
+        this.patientRepo = patientRepo;
+        this.appointmentRepo = appointmentRepo;
+    }
 
     // GET：顯示表單
     @GetMapping("/appointment/new")

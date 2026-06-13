@@ -1,6 +1,5 @@
 package tw.edu.fju.miniclinic.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tw.edu.fju.miniclinic.model.Appointment;
@@ -15,14 +14,17 @@ import java.util.stream.Collectors;
 @RestController
 public class StatsController {
 
-    @Autowired
-    private DoctorRepository doctorRepo;
+    private final DoctorRepository doctorRepo;
+    private final PatientRepository patientRepo;
+    private final AppointmentRepository appointmentRepo;
 
-    @Autowired
-    private PatientRepository patientRepo;
-
-    @Autowired
-    private AppointmentRepository appointmentRepo;
+    public StatsController(DoctorRepository doctorRepo, 
+                           PatientRepository patientRepo, 
+                           AppointmentRepository appointmentRepo) {
+        this.doctorRepo = doctorRepo;
+        this.patientRepo = patientRepo;
+        this.appointmentRepo = appointmentRepo;
+    }
 
     /**
      * GET /api/stats

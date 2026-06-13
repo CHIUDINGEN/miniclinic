@@ -1,6 +1,5 @@
 package tw.edu.fju.miniclinic.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +14,11 @@ import java.util.Optional;
 @RestController
 public class PatientApiController {
 
-    @Autowired
-    private PatientRepository patientRepo;
+    private final PatientRepository patientRepo;
+
+    public PatientApiController(PatientRepository patientRepo) {
+        this.patientRepo = patientRepo;
+    }
 
     @GetMapping("/api/patients")
     public List<Patient> getPatients() {

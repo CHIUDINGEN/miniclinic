@@ -2,7 +2,6 @@ package tw.edu.fju.miniclinic.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +13,11 @@ import tw.edu.fju.miniclinic.model.*;
 @Controller
 public class LoginController {
 
-    @Autowired
-    private DoctorRepository doctorRepo;
+    private final DoctorRepository doctorRepo;
+
+    public LoginController(DoctorRepository doctorRepo) {
+        this.doctorRepo = doctorRepo;
+    }
 
     // GET：顯示登入頁
     @GetMapping("/login")

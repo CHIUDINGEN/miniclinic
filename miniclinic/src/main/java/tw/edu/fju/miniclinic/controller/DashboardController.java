@@ -2,7 +2,6 @@ package tw.edu.fju.miniclinic.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +16,13 @@ import java.util.List;
 @Controller
 public class DashboardController {
 
-    @Autowired
-    private DoctorRepository doctorRepo;
+    private final DoctorRepository doctorRepo;
+    private final AppointmentRepository appointmentRepo;
 
-    @Autowired
-    private AppointmentRepository appointmentRepo;
+    public DashboardController(DoctorRepository doctorRepo, AppointmentRepository appointmentRepo) {
+        this.doctorRepo = doctorRepo;
+        this.appointmentRepo = appointmentRepo;
+    }
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {

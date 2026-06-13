@@ -1,6 +1,5 @@
 package tw.edu.fju.miniclinic.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +15,11 @@ import java.util.Optional;
 @Controller
 public class DoctorPageController {
 
-    @Autowired
-    private DoctorRepository doctorRepo;
+    private final DoctorRepository doctorRepo;
+
+    public DoctorPageController(DoctorRepository doctorRepo) {
+        this.doctorRepo = doctorRepo;
+    }
 
     @GetMapping("/doctors")
     public String listDoctors(
