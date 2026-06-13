@@ -5,14 +5,19 @@ INSERT INTO doctor (doctor_id, name, department, specialty, password_hash) VALUE
     ('D003', '王建華醫師', '復健科', '運動傷害、脊椎復健', '$2a$10$4fZBPZq1NJmqW5MUgOUsqukV6OiTJutAKR/WbiFiQ6PRTjFbNsMFy'),
     ('D004', '李美玲醫師', '小兒科', '兒童感冒、疫苗接種',  '$2a$10$ZlsUgEo2MOm0RYxwcP55qukrjipEXYNKyyRfdIKkOEv7RpuXEPhxK'),
     ('D005', '張雅筑醫師', '身心科', '焦慮、失眠、情緒調適', '$2a$10$XsgY9Cmk7PqJ2pve2k4xwuTnV/hakC6LOGJqicQyjH.wDiM7PQhWa')
-ON CONFLICT (doctor_id) DO NOTHING;
+ON CONFLICT (doctor_id) DO UPDATE SET 
+    name=excluded.name, department=excluded.department, specialty=excluded.specialty;
 
--- 初始病患資料（3 位虛構病患）
+-- 初始病患資料（同步更新為隨機虛擬數據）
 INSERT INTO patient (chart_no, name, gender, birth_date, phone) VALUES
-    ('TEST00001', '測試病患甲', '男', '1985-03-15', '0912-345-678'),
-    ('TEST00002', '王小明',     '男', '1990-07-22', '0923-456-789'),
-    ('TEST00003', '李小華',     '女', '1988-11-30', '0934-567-890')
-ON CONFLICT (chart_no) DO NOTHING;
+    ('TEST00001', '張嘉明', '男', '1995-05-20', '0912-345-678'),
+    ('TEST00002', '林秋燕', '女', '1988-11-12', '0921-888-777'),
+    ('TEST00003', '陳俊宏', '男', '2002-01-01', '0933-555-666')
+ON CONFLICT (chart_no) DO UPDATE SET 
+    name=excluded.name, 
+    gender=excluded.gender, 
+    birth_date=excluded.birth_date, 
+    phone=excluded.phone;
 
 -- 初始掛號資料（appt_id 必須明確指定，ON CONFLICT 才能防止重複）
 INSERT INTO appointment (appt_id, chart_no, doctor_id, appt_date, time_slot, status) VALUES
