@@ -1,96 +1,77 @@
-# MiniClinic 社區診所掛號系統
+# MiniClinic - 診所管理系統
 
-MiniClinic 是一個基於 Spring Boot 3 打造的輕量化診所掛號管理系統。本專案旨在演示如何整合 Web、資料庫、安全驗證以及雲端部署技術，並提供醫師與開發者（透過 API）直觀的互動介面。
+MiniClinic 是一個基於 Spring Boot 3.4.1 開發的輕量級診所管理系統。本系統旨在提供醫師一個簡潔的介面來管理病患預約、查看診所即時營運數據，並維護醫師與病患資料。
 
-## 線上 Demo
+**🔗 線上演示:** [https://miniclinic-chiudingen.onrender.com/](https://miniclinic-chiudingen.onrender.com/)
 
-*   **部署網址：** `https://miniclinic-[你的Render帳號].onrender.com`
-*   **測試帳號：** `D001` / **密碼：** `pass1234`
+---
 
-## 技術棧
+## 🚀 核心功能
 
-*   **核心框架：** Java 17, Spring Boot 3.5.x
-*   **持久層：** Spring Data JPA (Hibernate)
-*   **資料庫：** SQLite (開發環境) / PostgreSQL (生產環境)
-*   **模板引擎：** Thymeleaf
-*   **安全性：** BCrypt 密碼雜湊加密, Session-based 登入攔截器
-*   **部署：** Docker (Multi-stage build), Render
+### 1. 醫師管理後台 (需登入)
+*   **個人儀表板**: 查看當日醫師專屬預約清單，支援時區同步（Asia/Taipei）。
+*   **掛號狀態管理**: 醫師可即時更新掛號狀態為「已完成」或「已取消」。
+*   **安全性**: 密碼採用 BCrypt 強力雜湊加密，確保登入安全。
 
-## 功能清單
+### 2. 營運數據可視化
+*   **數據統計面版**: 即時計算醫師總數、病患總數、掛號總量。
+*   **科別分佈統計**: 自動分析各科別（如：家醫科、內科）的預約分佈狀況。
+*   **REST API**: 提供 `/api/stats` 等接口，回傳 JSON 格式統計摘要。
 
-### 醫師端
-*   **身分驗證：** 安全的醫師登入系統與密碼修改功能。
-*   **個人 Dashboard：** 即時查看今日掛號清單。
-*   **狀態管理：** 支援一鍵標記「看診完成」或「取消掛號」。
+### 3. 病患與掛號流程
+*   **醫師/病患清單**: 支援依科別篩選醫師，並提供病歷摘要查看。
+*   **掛號預約系統**: 具備表單驗證與衝突檢查的掛號流程。
+*   **資料保護**: 提供虛擬隨機生成的病患數據，保護測試隱私。
 
-### 掛號與病患
-*   **線上掛號：** 提供病患選擇醫師、時段與預約日期。
-*   **病患管理：** 支援病患資料的新增與查詢。
+---
 
-### 系統整合 (API)
-*   **統計摘要：** 公開的 `/api/stats` 端點，提供全系統運作數據摘要。
-*   **掛號管理 API：** 支援第三方系統查詢掛號、新增預約及更新狀態。
+## 🛠️ 技術棧
 
-## API 端點摘要
+*   **後端**: Java 17, Spring Boot 3.4.1
+*   **持久層**: Spring Data JPA (Hibernate)
+*   **資料庫**: 
+    *   **開發環境 (Dev)**: SQLite (檔案：`miniclinic.db`)
+    *   **生產環境 (Prod)**: PostgreSQL (部署於 Render)
+*   **樣板引擎**: Thymeleaf (UTF-8 全域編碼修正)
+*   **安全性**: Spring Security Crypto (BCrypt)
+*   **建置工具**: Maven
 
-| 方法 | 路徑 | 說明 | 認證需求 |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/stats` | 取得系統總覽（醫師、病患、掛號統計） | 無 |
-| `GET` | `/api/appointments/count` | 取得掛號總筆數 | 無 |
-| `GET` | `/api/appointments` | 依日期或醫師篩選掛號資料 | 無 |
-| `PUT` | `/api/appointments/{id}/status` | 更新掛號狀態 (`COMPLETED`/`CANCELLED`) | 醫師登入 |
+---
 
-## 本機執行
+## 📦 快速開始
 
 ### 環境需求
-*   Java 17+
+*   JDK 17+
 *   Maven 3.6+
 
-### 啟動步驟
-```bash
-# 複製專案
-git clone https://github.com/[你的帳號]/miniclinic.git
-cd miniclinic
+### 本地執行步驟
+1.  **複製專案**:
+    ```bash
+    git clone <your-repo-url>
+    cd miniclinic
+    ```
+2.  **編譯並執行**:
+    ```bash
+    mvn spring-boot:run
+    ```
+3.  **瀏覽網頁**: 開啟 `http://localhost:8080`
 
-# 使用預設的開發 Profile (SQLite) 啟動
-./mvnw spring-boot:run
-```
+---
 
-開啟瀏覽器訪問 http://localhost:8080
+## ⚙️ 配置說明
 
-預設醫師帳密：
+*   **編碼規範**: 專案全面強制使用 **UTF-8** 編碼（含 Maven, SQL 腳本, Thymeleaf 與 Servlet 回傳內容），徹底解決中文亂碼問題。
+*   **環境切換**:
+    *   `application-dev.properties`: 適用於本地開發。
+    *   `application-prod.properties`: 適用於雲端部署（自動讀取 `data-prod.sql` 初始化資料）。
+*   **DI 規範**: 全面採用 **建構子注入 (Constructor Injection)**，取代舊有的 `@Autowired` 欄位注入，提升程式碼可測試性與穩定性。
 
-- D001 / pass1234
-- D002 / pass1234
-- （其他醫師密碼均為 pass1234）
+---
 
-## 資料初始化
+## 📝 測試帳號
 
-第一次啟動時，`data.sql` 會自動插入：
-- 5 位虛構醫師
-- 3 位虛構病患（TEST00001, TEST00002, TEST00003）
-- 3 筆示範掛號
-
-## 專案結構
-
-```
-src/
-├── main/
-│   ├── java/tw/edu/fju/miniclinic/
-│   │   ├── controller/     # HTTP 請求處理
-│   │   ├── model/          # Entity 與 Repository
-│   │   ├── interceptor/    # 登入驗證
-│   │   └── config/         # Spring 配置
-│   └── resources/
-│       ├── templates/      # Thymeleaf 模板
-│       ├── static/         # CSS、JS
-│       └── application.properties
-```
-
-## 作者
-
-2026 年 Java 程式設計課程作業
-
-## 聲明
-
-所有病患資料均為虛構，僅供教學使用。
+| 醫師編號 | 預設密碼 | 權限內容 |
+| :--- | :--- | :--- |
+| D001 | pass1234 | 陳志明醫師 (家醫科) |
+| D002 | pass1234 | 林佩君醫師 (內科) |
+| D003 | pass1234 | 王建華醫師 (復健科) |
